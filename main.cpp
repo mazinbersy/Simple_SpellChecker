@@ -6,6 +6,12 @@
 
 using namespace std;
 
+struct ComparePairFirst {
+    bool operator()(const pair<int, string>& a, const pair<int, string>& b) const {
+        return a.first > b.first; // Sort in ascending order based on the first element (Hamming distance)
+    }
+};
+
 bool isASCII(const string& word) {
     for (char c : word) {
         if (static_cast<unsigned char>(c) > 127) {
@@ -23,7 +29,7 @@ int hammingDistance(const string& str1, const string& str2) {
     int distance = max(len1, len2) - minLength;
 
     for (int i = 0; i < minLength; ++i) {
-        if (str1[i] != str2[i]) {
+        if (tolower(str1[i]) != tolower(str2[i])) {
             ++distance;
         }
     }
@@ -111,7 +117,63 @@ int main() {
     wordlistFile.close();
 
     cout << "The dictionary contains " << dictionaryWordCount(dictionary) << " words" << endl;
-    // Use the dictionary...
+    
+    ifstream inputFile("input.txt");
+    priority_queue<pair<int, string>, vector<pair<int, string>>, ComparePairFirst> q;
+    int count;
+    while (inputFile >> word)
+    {
+        int index = tolower(word[0]) - 'a';
+        count = 0;
+        if (!dictionary[index]->search(word))
+        {
+            vector<string> temp = dictionary[index]->inorderTraversal();
+            for (string x : temp)
+            {
+                q.push({ hammingDistance(word, x), x });
+                if (q.top().first == 1)
+                    count++;
+                if (count >= 5)
+                    break;
+            }
+            if (count < 5)
+            {
+                for (int i = 0; i < 26; i++)
+                {
+                    if (i == index)
+                        continue;
+                    vector<string> temp = dictionary[i]->inorderTraversal();
+                    for (string x : temp)
+                    {
+                        q.push({ hammingDistance(word, x), x });
+                        if (q.top().first == 1)
+                            count++;
+                        if (count >= 5)
+                            break;
+                    }
+                }
+            }
+        }
+
+        // Check if q is not empty before accessing its top element
+        if (!q.empty())
+        {
+            string x1 = q.top().second;
+            q.pop();
+            string x2 = q.top().second;
+            q.pop();
+            string x3 = q.top().second;
+            q.pop();
+            string x4 = q.top().second;
+            q.pop();
+            string x5 = q.top().second;
+            while (!q.empty())
+                q.pop();
+            cout << "Mispelled Word: " << word << endl << "Suggestions: " << x1 << ", " << x2 << ", " << x3 << ", " << x4 << ", " << x5 << endl;
+        }
+    }
+
+   
 
     // Free memory for BST objects
     for (int i = 0; i < 26; ++i) {
