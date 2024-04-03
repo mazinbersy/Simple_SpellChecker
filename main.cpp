@@ -54,8 +54,10 @@ int main() {
     for (int i = 0; i < 26; ++i) {
         dictionary[i] = new BST<string>();
     }
-
-    ifstream wordlistFile("wordlist.txt");
+    string wordlist;
+    cout << "Enter File Path of WordList File: ";
+    cin >> wordlist;
+    ifstream wordlistFile(wordlist);
     if (!wordlistFile) {
         cerr << "Error: Unable to open wordlist file." << endl;
         return 1;
@@ -79,7 +81,7 @@ int main() {
     if (read)cout << "Wordlist file read successfully" << endl;
     wordlistFile.close();
     
-    ofstream updatedDictionary("wordlist.txt", ios::app);
+    ofstream updatedDictionary(wordlist, ios::app);
 
 
     if (!updatedDictionary) {
@@ -118,7 +120,10 @@ int main() {
 
     cout << "The dictionary contains " << dictionaryWordCount(dictionary) << " words" << endl;
     
-    ifstream inputFile("input.txt");
+    string input;
+    cout << "Enter File Path of Input File: ";
+    cin >> input;
+    ifstream inputFile(input);
     priority_queue<pair<int, string>, vector<pair<int, string>>, ComparePairFirst> q;
     int count;
     while (inputFile >> word)
