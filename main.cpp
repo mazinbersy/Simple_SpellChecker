@@ -2,7 +2,7 @@
 #include <fstream>
 #include <string>
 #include <cctype>
-#include "BST.h" // Assuming you have the BST implementation in a separate file
+#include "BST.h"
 
 using namespace std;
 
